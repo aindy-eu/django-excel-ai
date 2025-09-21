@@ -20,11 +20,16 @@ For a comprehensive overview of the codebase organization, see [Project Structur
 # Clone and open in VS Code
 git clone https://github.com/aindy-eu/django-excel-ai.git
 cd django-excel-ai
+
+# Setup environment (required for DevContainer)
+cp .env.example .env
+# Edit .env to add your ANTHROPIC_API_KEY if you want AI features
+
 code .
 
 # Reopen in Container (Cmd+Shift+P → "Reopen in Container")
 # PostgreSQL database will start automatically via Docker Compose
-# Then run:
+# Then run inside the container:
 ./dev-start.sh
 ```
 

@@ -16,7 +16,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get update && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /workspaces/app
+WORKDIR /workspaces/django-excel-ai
 
 # Python optimization
 ENV PYTHONDONTWRITEBYTECODE=1 \
