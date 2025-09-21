@@ -1,0 +1,10 @@
+<div>
+  <dt class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-200">{{ label }}</dt>
+  <dd class="text-gray-900 dark:text-white transition-colors duration-200">
+    {% if value == "Not set" %}
+      <span class="text-gray-400 dark:text-gray-500">{{ value }}</span>
+    {% else %}
+      {{ value }}
+    {% endif %}
+  </dd>
+</div>

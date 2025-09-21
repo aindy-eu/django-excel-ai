@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Django Excel AI{% endblock %}</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/webp" href="{% static 'app-favicon-180.webp' %}">
+    <link rel="apple-touch-icon" href="{% static 'app-favicon-180.webp' %}">
+
+    <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" type="text/css" />
+    <!-- CSRF Meta Tag for JavaScript -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+
+    <!-- JavaScript Modules (must load AFTER HTMX) -->
+    <script src="{% static 'js/utils/csrf.js' %}"></script>
+
+    <!-- Alpine.js Core -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Alpine.js Components (Separate Files) -->
+    <script src="{% static 'js/alpine/components/dropdown.js' %}"></script>
+    <script src="{% static 'js/alpine/components/theme.js' %}"></script>
+    <script src="{% static 'js/alpine/components/avatarUpload.js' %}"></script>
+    <script src="{% static 'js/alpine/components/excelUpload.js' %}"></script>
+
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+    {% include 'partials/navigation/_main.html' %}
+
+    {% block content %}
+    {% endblock content %}
+
+    {% block extra_js %}
+    {% endblock extra_js %}
+</body>
+</html>

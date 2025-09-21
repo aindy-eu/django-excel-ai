@@ -1,0 +1,137 @@
+{% load static %}
+<style>
+  /* Ensure HTMX indicator is hidden by default */
+  .htmx-indicator {
+    display: none !important;
+  }
+  /* Show only during HTMX requests */
+  .htmx-request .htmx-indicator {
+    display: flex !important;
+  }
+</style>
+<div id="avatar-upload-form"
+     class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-colors duration-200"
+     x-data="avatarUpload({% if profile.avatar %}true{% else %}false{% endif %})"
+     x-init="$nextTick(() => { console.log('Avatar upload initialized'); })"
+     @dragover.prevent="isDragging = true"
+     @dragleave.prevent="isDragging = false"
+     @drop.prevent="handleDrop($event)"
+     hx-trigger="avatar-updated from:body"
+     hx-get="{% url 'users:avatar_upload' %}"
+     hx-swap="outerHTML">
+
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Upload Avatar</h3>
+    <button type="button"
+            onclick="document.getElementById('avatar-upload-modal').innerHTML = ''"
+            class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200">
+      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+      <span class="sr-only">Close</span>
+    </button>
+  </div>
+
+  <form hx-post="{% url 'users:avatar_upload' %}"
+        hx-target="#profile-info-card"
+        hx-swap="outerHTML"
+        hx-encoding="multipart/form-data"
+        @submit="uploading = true"
+        enctype="multipart/form-data"
+        method="post">
+    {% csrf_token %}
+
+    <!-- Drop Zone -->
+    <div class="border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200 cursor-pointer"
+         :class="{'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20': isDragging, 'border-gray-300 dark:border-gray-600': !isDragging}"
+         @click="$refs.fileInput.click()">
+
+      <!-- Preview -->
+      <div x-show="previewUrl" class="mb-4">
+        <img :src="previewUrl"
+             class="w-32 h-32 rounded-full mx-auto object-cover shadow-md"
+             alt="Preview">
+      </div>
+
+      <!-- Current Avatar (if exists and no preview) -->
+      <div x-show="!previewUrl && hasCurrentAvatar" class="mb-4">
+        {% if profile.avatar %}
+        <img src="{{ profile.avatar.url }}"
+             class="w-32 h-32 rounded-full mx-auto object-cover shadow-md"
+             alt="Current avatar">
+        {% endif %}
+      </div>
+
+      <!-- Upload Icon (no preview, no current avatar) -->
+      <svg x-show="!previewUrl && !hasCurrentAvatar"
+           class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500"
+           stroke="currentColor"
+           fill="none"
+           viewBox="0 0 48 48">
+        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+      </svg>
+
+      <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        <span x-show="!fileName">Drop an image here or click to select</span>
+        <span x-show="fileName" x-text="fileName" class="font-medium"></span>
+      </p>
+
+      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+        JPG, PNG, or WebP (max 5MB)
+      </p>
+    </div>
+
+    <!-- Hidden File Input -->
+    <input type="file"
+           x-ref="fileInput"
+           name="avatar"
+           accept="image/*"
+           class="hidden"
+           @change="handleFileChange($event)">
+
+    <!-- Error Messages -->
+    {% if form.avatar.errors %}
+    <div class="mt-3 bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-400 px-4 py-3 rounded">
+      {{ form.avatar.errors.0 }}
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="mt-3 bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-400 px-4 py-3 rounded">
+      Please select a valid image file.
+    </div>
+    {% endif %}
+
+    <!-- Action Buttons -->
+    <div class="mt-6 flex gap-3">
+      <button type="submit"
+              :disabled="!fileName || uploading"
+              class="flex-1 bg-indigo-600 dark:bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-700 dark:hover:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+        <span x-show="!uploading">Upload Avatar</span>
+        <span x-show="uploading" class="flex items-center justify-center">
+          <svg class="animate-spin h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Uploading...
+        </span>
+      </button>
+
+      <button type="button"
+              @click="clearSelection()"
+              x-show="fileName"
+              class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+        Clear
+      </button>
+
+      <button type="button"
+              onclick="document.getElementById('avatar-upload-modal').innerHTML = ''"
+              class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,176 @@
+{# AI Validation Results - HTMX Partial #}
+<div id="refresh-indicator" class="htmx-indicator">
+  <div class="bg-blue-50 rounded-lg border border-blue-200 p-6 mt-6">
+    <div class="flex items-center">
+      <svg class="animate-spin h-5 w-5 text-blue-600 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <div>
+        <h3 class="text-sm font-medium text-blue-900">Getting fresh validation...</h3>
+        <p class="mt-1 text-xs text-blue-700">Bypassing cache to get latest results</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="ai-validation-results" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mt-6" x-data="{ refreshing: false }">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-lg font-medium text-gray-900 flex items-center">
+      <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      {% if request.resolver_match.url_name == 'detail' %}Previous Validation{% else %}Validation Complete{% endif %}
+    </h3>
+    <div class="flex items-center space-x-2">
+      <!-- Always show refresh button for better UX -->
+      <button
+        @click="console.log('Force refresh clicked'); refreshing = true"
+        :disabled="refreshing"
+        hx-post="{% url 'excel_manager:validate_ai' upload.pk %}"
+        hx-vals='{"force_refresh": "true"}'
+        hx-target="#ai-validation-section"
+        hx-swap="innerHTML"
+        hx-indicator="#refresh-indicator"
+        hx-on:htmx:before-request="console.log('HTMX request starting', event.detail)"
+        hx-on:htmx:after-request="console.log('HTMX request completed', event.detail); refreshing = false"
+        hx-on:htmx:response-error="console.error('HTMX error', event.detail)"
+        class="inline-flex items-center px-3 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        title="Get fresh validation, bypassing cache"
+      >
+        <svg x-show="!refreshing" class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+        <svg x-show="refreshing" class="animate-spin h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span x-text="refreshing ? 'Refreshing...' : 'Force Refresh'"></span>
+      </button>
+      {% if cached %}
+      <span class="text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded flex items-center">
+        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+        </svg>
+        Cached (1hr)
+      </span>
+      {% else %}
+      <span class="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">Fresh result</span>
+      {% endif %}
+      <span class="text-xs text-gray-500">{{ validation.validated_at|date:"M d, Y H:i" }}</span>
+    </div>
+  </div>
+
+  {# Summary Stats #}
+  <div class="grid grid-cols-3 gap-4 mb-6">
+    <div class="bg-green-50 rounded-lg p-3">
+      <div class="text-2xl font-bold text-green-700">{{ validation.valid_rows }}</div>
+      <div class="text-sm text-green-600">Valid rows</div>
+      <div class="text-xs text-green-500">
+        {% if validation.total_rows %}
+        {{ validation.valid_rows|floatformat:0 }} / {{ validation.total_rows }}
+        {% endif %}
+      </div>
+    </div>
+    <div class="bg-yellow-50 rounded-lg p-3">
+      <div class="text-2xl font-bold text-yellow-700">{{ validation.warning_rows }}</div>
+      <div class="text-sm text-yellow-600">Warnings</div>
+    </div>
+    <div class="bg-red-50 rounded-lg p-3">
+      <div class="text-2xl font-bold text-red-700">{{ validation.error_rows }}</div>
+      <div class="text-sm text-red-600">Errors</div>
+    </div>
+  </div>
+
+  {# AI Summary #}
+  {% if validation.summary %}
+  <div class="mb-6">
+    <h4 class="text-sm font-medium text-gray-700 mb-2">Key Findings</h4>
+    <div class="bg-blue-50 border-l-4 border-blue-400 p-3 text-sm text-blue-700">
+      {{ validation.summary }}
+    </div>
+  </div>
+  {% endif %}
+
+  {# Suggestions #}
+  {% if validation.suggestions %}
+  <div class="mb-6">
+    <h4 class="text-sm font-medium text-gray-700 mb-2">Recommendations</h4>
+    <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+      {% for suggestion in validation.validation_result.suggestions %}
+      <li>{{ suggestion }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {# Cost and Performance Metrics #}
+  <div class="mt-6 pt-4 border-t border-gray-200">
+    <div class="flex items-center justify-between text-xs text-gray-500">
+      <div class="flex items-center space-x-4">
+        <span>
+          <strong>Cost:</strong> ${{ validation.cost|floatformat:4 }}
+        </span>
+        <span>
+          <strong>Tokens:</strong> {{ validation.total_tokens }}
+        </span>
+        <span>
+          <strong>Model:</strong> {{ validation.ai_metadata.model|default:"Claude 4 Sonnet" }}
+        </span>
+      </div>
+      <div>
+        <strong>Response time:</strong>
+        {% if validation.ai_metadata.response_time_ms %}
+          {{ validation.ai_metadata.response_time_ms|floatformat:0 }}ms
+        {% else %}
+          N/A
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {# Detailed Issues (Collapsible) #}
+  {% if validation.issues_found > 0 %}
+  <div class="mt-6" x-data="{ showDetails: false }">
+    <button
+      @click="showDetails = !showDetails"
+      class="text-sm text-blue-600 hover:text-blue-700 flex items-center"
+    >
+      <svg :class="{'rotate-90': showDetails}" class="w-4 h-4 mr-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+      <span x-text="showDetails ? 'Hide' : 'Show'" class="mr-1"></span> detailed issues ({{ validation.issues_found }})
+    </button>
+
+    <div x-show="showDetails" x-transition class="mt-3">
+      <div class="bg-gray-50 rounded-lg p-4 max-h-64 overflow-y-auto">
+        <table class="min-w-full text-xs">
+          <thead>
+            <tr class="text-left text-gray-600">
+              <th class="px-2 py-1">Row</th>
+              <th class="px-2 py-1">Column</th>
+              <th class="px-2 py-1">Issue</th>
+              <th class="px-2 py-1">Severity</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            {% for issue in validation.validation_result.issues %}
+            <tr>
+              <td class="px-2 py-1 text-gray-700">{{ issue.row }}</td>
+              <td class="px-2 py-1 text-gray-700">{{ issue.column }}</td>
+              <td class="px-2 py-1 text-gray-600">{{ issue.issue }}</td>
+              <td class="px-2 py-1">
+                <span class="px-2 py-0.5 rounded text-xs font-medium
+                  {% if issue.severity == 'error' %}bg-red-100 text-red-700
+                  {% else %}bg-yellow-100 text-yellow-700{% endif %}">
+                  {{ issue.severity }}
+                </span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>

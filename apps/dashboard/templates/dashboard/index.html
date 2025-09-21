@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Django Excel AI{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+
+    <!-- Main Content -->
+    <main class="py-10">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Welcome Section -->
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg mb-6 border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white transition-colors duration-200">
+                        Welcome back, {{ user.get_short_name|default:user.email }}
+                    </h3>
+                    <div class="mt-2 max-w-xl text-sm text-gray-600 dark:text-gray-400 transition-colors duration-200">
+                        <p>You're successfully logged in. This is your personal dashboard where you can manage your account and view analytics.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+                <!-- Card 1 -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+                    <div class="px-4 py-5 sm:p-6">
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate transition-colors duration-200">
+                            Total Users
+                        </dt>
+                        <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white transition-colors duration-200">
+                            1,234
+                        </dd>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+                    <div class="px-4 py-5 sm:p-6">
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate transition-colors duration-200">
+                            Active Sessions
+                        </dt>
+                        <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white transition-colors duration-200">
+                            89
+                        </dd>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+                    <div class="px-4 py-5 sm:p-6">
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate transition-colors duration-200">
+                            Conversion Rate
+                        </dt>
+                        <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white transition-colors duration-200">
+                            24.5%
+                        </dd>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+                    <div class="px-4 py-5 sm:p-6">
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate transition-colors duration-200">
+                            Avg. Response Time
+                        </dt>
+                        <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white transition-colors duration-200">
+                            432ms
+                        </dd>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+                <div class="px-4 py-5 sm:px-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white transition-colors duration-200">
+                        Recent Activity
+                    </h3>
+                </div>
+                <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <li>
+                        <div class="px-4 py-4 sm:px-6">
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate transition-colors duration-200">
+                                    User Login
+                                </p>
+                                <div class="ml-2 flex-shrink-0 flex">
+                                    <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 transition-colors duration-200">
+                                        Success
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="mt-2 sm:flex sm:justify-between">
+                                <div class="sm:flex">
+                                    <p class="flex items-center text-sm text-gray-500 dark:text-gray-400 transition-colors duration-200">
+                                        {{ user.email }}
+                                    </p>
+                                </div>
+                                <div class="mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400 sm:mt-0 transition-colors duration-200">
+                                    <p>
+                                        Just now
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="px-4 py-4 sm:px-6">
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate transition-colors duration-200">
+                                    Profile Updated
+                                </p>
+                                <div class="ml-2 flex-shrink-0 flex">
+                                    <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 transition-colors duration-200">
+                                        Success
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="mt-2 sm:flex sm:justify-between">
+                                <div class="sm:flex">
+                                    <p class="flex items-center text-sm text-gray-500 dark:text-gray-400 transition-colors duration-200">
+                                        Settings changed
+                                    </p>
+                                </div>
+                                <div class="mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400 sm:mt-0 transition-colors duration-200">
+                                    <p>
+                                        2 hours ago
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

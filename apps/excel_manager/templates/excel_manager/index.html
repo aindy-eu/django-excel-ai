@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Excel Manager - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Excel Manager</h1>
+
+    <!-- Upload Area -->
+    <div id="excel-upload-area" class="mb-8">
+        {% include "excel_manager/partials/_upload_area.html" %}
+    </div>
+
+    <!-- File List -->
+    <div id="excel-file-list">
+        {% include "excel_manager/partials/_file_list.html" %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Listen for upload success event to reset form
+    document.body.addEventListener('excel-uploaded', function() {
+        // Reload the upload area to reset form
+        htmx.ajax('GET', '{% url "excel_manager:index" %}', {
+            target: '#excel-upload-area',
+            select: '#excel-upload-area'
+        });
+    });
+</script>
+{% endblock %}

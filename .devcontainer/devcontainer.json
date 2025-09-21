@@ -1,0 +1,31 @@
+{
+  "name": "django-excel-ai",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "web",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {"label": "Django", "onAutoForward": "notify"}
+  },
+  "postCreateCommand": "pip install pip-tools && pip-sync requirements/development.lock && python manage.py migrate && cd static_src && npm install && cd ..",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.black-formatter",
+        "charliermarsh.ruff",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "[python]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "ms-python.black-formatter"
+        },
+        "ruff.lint.enable": true,
+        "ruff.lint.run": "onType"
+      }
+    }
+  }
+}

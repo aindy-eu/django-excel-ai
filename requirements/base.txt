@@ -1,0 +1,29 @@
+# Core Django and database
+Django>=5.1,<5.2
+psycopg[binary]>=3.2
+django-environ>=0.11
+
+# Authentication
+django-allauth>=65.0
+
+# HTMX
+django-htmx>=1.19.0
+
+# Frontend & styling
+whitenoise>=6.7
+Pillow>=10.4
+
+# Forms
+django-crispy-forms>=2.3
+crispy-tailwind>=1.0
+
+# File processing
+openpyxl>=3.1.2  # Excel file parsing
+python-magic>=0.4.27  # File type detection
+
+# AI & Machine Learning
+anthropic>=0.39.0  # Claude AI SDK
+python-dotenv>=1.0.0  # Environment variable management
+
+# Production server
+gunicorn>=22.0

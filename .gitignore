@@ -1,0 +1,252 @@
+# ===========================================
+# Python / Django
+# ===========================================
+
+# Byte-compiled / optimized files
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+
+# Django specific
+*.sqlite3
+*.sqlite3-journal
+local_settings.py
+db.sqlite3-wal
+db.sqlite3-shm
+
+# Django media files
+media/
+media_root/
+test_media/
+
+# Django static files
+static/css/dist/
+staticfiles/
+static_root/
+static_cdn/
+
+# Django migrations (uncomment if you want to ignore)
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# ===========================================
+# Environment & Secrets
+# ===========================================
+.env
+.env.*
+!.env.example
+secrets/
+*.key
+*.pem
+*.crt
+
+# ===========================================
+# Virtual Environments
+# ===========================================
+.venv/
+venv/
+env/
+ENV/
+virtualenv/
+.virtualenvs/
+pipenv/
+.pipenv/
+
+# ===========================================
+# IDEs & Editors
+# ===========================================
+
+# VS Code
+.vscode/
+*.code-workspace
+.history/
+
+# PyCharm / JetBrains
+.idea/
+*.iml
+*.iws
+.idea_modules/
+
+# Vim
+*.swp
+*.swo
+*.swn
+*~
+.*.sw?
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ===========================================
+# Testing & Quality
+# ===========================================
+
+# Coverage reports
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+coverage.json
+*.cover
+.hypothesis/
+
+# pytest
+.pytest_cache/
+.cache/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ruff
+.ruff_cache/
+
+# tox
+.tox/
+
+# ===========================================
+# Build & Distribution
+# ===========================================
+dist/
+build/
+*.egg-info/
+*.egg
+MANIFEST
+wheels/
+pip-wheel-metadata/
+
+# ===========================================
+# Node / Frontend (for Tailwind, etc.)
+# ===========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+.yarn/
+package-lock.json
+yarn.lock
+
+# ===========================================
+# Logs, Temporary Files & Backups
+# ===========================================
+*.log
+logs/
+log/
+*.pid
+*.seed
+*.pid.lock
+temp/
+tmp/
+.temp/
+.tmp/
+
+# Backup files
+*.backup
+*.bak
+*.orig
+
+# Database dumps
+*.sql
+*.dump
+*.dmp
+
+# ===========================================
+# Documentation
+# ===========================================
+site/
+docs/_build/
+docs/.doctrees/
+
+# ===========================================
+# Project Specific
+# ===========================================
+
+# Local development resources
+.local/
+
+# ===========================================
+# Claude AI Development Frameworks
+# ===========================================
+# EDUCATIONAL NOTE: This section shows how AI-assisted development
+# artifacts are typically managed in production projects.
+#
+# In a normal project, these would be ACTIVE (uncommented) because:
+# - User stories are work-in-progress documents
+# - AI handovers contain session-specific context
+# - Reviews and analysis are temporal snapshots
+#
+# For THIS open-source demo, they're COMMENTED OUT so you can:
+# - See real user stories that built this project
+# - Understand the scruaim framework in action
+# - Learn from actual AI pair-programming artifacts
+# - Explore how systematic development works
+#
+# In your own projects, uncomment these lines:
+# ===========================================
+
+# Scruaim framework (user stories & backlog)
+# --------------------------------------------
+# Normally you'd hide work-in-progress stories:
+# .claude/scruaim/**/*.md
+# !.claude/scruaim/**/README.md
+# !.claude/scruaim/**/INSTRUCTIONS.md
+# !.claude/scruaim/**/STORY-REVIEW.md
+# !.claude/scruaim/**/*.gitkeep
+
+# AI Handovers (context preservation)
+# ------------------------------------
+# These preserve context between AI sessions:
+# .claude/handovers/*.md
+# !.claude/handovers/README.md
+
+# AI Reviews (code analysis snapshots)
+# -------------------------------------
+# These are point-in-time analysis documents:
+# .claude/reviews/**/*.md
+
+# AI Analysis (architecture documentation)
+# -----------------------------------------
+# These are generated analysis documents:
+# .claude/analysis/**/*.md
+
+# ===========================================
+# WHY THESE ARE VISIBLE IN THIS PROJECT:
+# ===========================================
+# This project serves as a TEACHING TOOL showing:
+# 1. How to work systematically with AI tools
+# 2. Real user stories from idea to implementation
+# 3. The evolution of a project through stories
+# 4. How AI and humans collaborate effectively
+#
+# The .claude/ folder is your window into the
+# development process, not just the final code.
+# ===========================================
+
+# Any other Claude-specific files (keep these hidden)
+.claude/cache/
+.claude/context/
+.claude/sessions/
+.claude/settings.local.json
+.claude/**/*.local.*
+.claude/**/*.personal.*
+
+# Alternative AI tool directories (if switching tools)
+.cursor/
+.aide/
+.copilot/

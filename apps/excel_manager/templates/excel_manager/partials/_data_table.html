@@ -1,0 +1,43 @@
+{% if current_sheet %}
+<div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+            <tr>
+                {% for header in current_sheet.headers %}
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
+                    {{ header }}
+                </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            {% for row in current_sheet.row_data.rows %}
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                {% for cell in row %}
+                <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 whitespace-nowrap">
+                    {{ cell|default:"" }}
+                </td>
+                {% endfor %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="{{ current_sheet.headers|length }}" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                    No data in this sheet
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if current_sheet.row_count > 100 %}
+<div class="mt-4 text-sm text-gray-500 dark:text-gray-400 text-center">
+    Showing first 100 rows of {{ current_sheet.row_count }} total rows
+</div>
+{% endif %}
+
+{% else %}
+<div class="text-center py-8">
+    <p class="text-gray-500 dark:text-gray-400">No sheet data available</p>
+</div>
+{% endif %}

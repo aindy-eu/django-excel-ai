@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspaces/${LOCAL_WORKSPACE_FOLDER_BASENAME:-app}:cached
+      - ~/.ssh:/root/.ssh:ro
+    env_file:
+      - ../.env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    command: sleep infinity
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      # Development-only credentials - isolated container environment
+      # Production MUST use proper secret management (AWS SSM, Vault, K8s secrets, etc.)
+      POSTGRES_DB: dashboard_db
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpassword123
+      # Alternative: Force configuration (uncomment to require explicit password)
+      # POSTGRES_PASSWORD: ${DB_PASSWORD:?Error: Please set DB_PASSWORD in .env file}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  pgdata:

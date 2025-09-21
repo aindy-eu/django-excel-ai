@@ -1,0 +1,17 @@
+# Base requirements
+-r base.txt
+
+# Production-specific packages
+django-redis>=5.4
+redis>=5.0
+
+# Monitoring & error tracking
+sentry-sdk>=2.13
+django-prometheus>=2.3
+
+# Security
+django-cors-headers>=4.4
+django-csp>=3.7
+
+# Database optimization
+django-cachalot>=2.6

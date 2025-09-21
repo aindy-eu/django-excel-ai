@@ -1,0 +1,32 @@
+# Base requirements
+-r base.txt
+
+# Development tools
+django-extensions>=3.2
+django-debug-toolbar>=4.4
+ipython>=8.26
+
+# Live reload
+django-browser-reload>=1.15
+
+# Tailwind CSS (only for development)
+django-tailwind>=3.8
+
+# Code quality
+black>=25.1
+ruff>=0.13
+mypy>=1.11
+django-stubs>=5.0
+pre-commit>=4.0
+bandit>=1.8  # Security linting
+pip-tools>=7.4  # Dependency locking
+djlint>=1.34  # Django template linting and formatting
+
+# Testing
+pytest>=8.4
+pytest-django>=4.11
+pytest-cov>=7.0
+pytest-timeout>=2.4
+pytest-xdist>=3.8  # Parallel test execution
+factory-boy>=3.3
+faker>=37.6

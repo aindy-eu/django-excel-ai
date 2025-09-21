@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header with back button -->
+    <div class="mb-6">
+        <a href="{% url 'excel_manager:index' %}"
+           class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline mb-4">
+            <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Excel Manager
+        </a>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ upload.original_filename }}
+        </h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            {{ sheets|length }} sheet{{ sheets|length|pluralize }} •
+            Uploaded {{ upload.uploaded_at|date:"M d, Y H:i" }}
+        </p>
+    </div>
+
+    <!-- AI Validation Section -->
+    {% if settings.AI_CONFIG.ENABLED %}
+    <div class="mb-6" id="ai-validation-section">
+        {% if not upload.ai_validations.exists %}
+        <!-- Show button only if no validation exists -->
+        <div id="ai-validation-button" class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-lg border border-blue-200 dark:border-gray-600 p-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <svg class="w-8 h-8 text-blue-600 dark:text-blue-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">AI Validation Available</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Detect data quality issues with Claude AI</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <button
+                        hx-post="{% url 'excel_manager:validate_ai' upload.pk %}"
+                        hx-target="#ai-validation-section"
+                        hx-swap="innerHTML"
+                        hx-indicator="#ai-validation-section"
+                        hx-disabled-elt="this"
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-blue-600 transition-colors"
+                    >
+                        <svg class="htmx-indicator animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="htmx-indicator">Validating...</span>
+                        <span>Validate with AI</span>
+                    </button>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        Estimated cost: $0.002
+                    </p>
+                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1" title="Results are cached for 1 hour to save costs">
+                        <svg class="inline w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                        </svg>
+                        Results cached for 1 hour
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- Show existing validation -->
+        {% with validation=upload.ai_validations.first %}
+            {% include "excel_manager/partials/_ai_validation_result.html" with validation=validation cached=has_cached_validation upload=upload show_refresh_button=True %}
+        {% endwith %}
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Sheet Tabs -->
+    {% if sheets %}
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md">
+        <div class="border-b border-gray-200 dark:border-gray-700">
+            <nav class="flex space-x-4 px-4" aria-label="Sheets">
+                {% for sheet in sheets %}
+                <button hx-get="{% url 'excel_manager:sheet_data' upload.pk sheet.sheet_index %}"
+                        hx-target="#data-table-container"
+                        hx-swap="innerHTML"
+                        class="sheet-tab py-3 px-4 text-sm font-medium border-b-2 transition-colors
+                               {% if sheet.sheet_index == current_sheet_index %}
+                               border-blue-500 text-blue-600 dark:text-blue-400
+                               {% else %}
+                               border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600
+                               {% endif %}">
+                    {{ sheet.sheet_name }}
+                </button>
+                {% endfor %}
+            </nav>
+        </div>
+
+        <!-- Data Table Container -->
+        <div id="data-table-container" class="p-4">
+            {% include "excel_manager/partials/_data_table.html" %}
+        </div>
+    </div>
+    {% else %}
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 text-center">
+        <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <p class="text-gray-500 dark:text-gray-400">No data available in this Excel file</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<style>
+    /* Hide indicators by default */
+    .htmx-indicator {
+        display: none !important;
+    }
+    /* Show indicators during request */
+    .htmx-request .htmx-indicator {
+        display: inline-block !important;
+    }
+    /* Hide non-indicators during request */
+    .htmx-request button > span:not(.htmx-indicator) {
+        display: none !important;
+    }
+    .htmx-request button > svg:not(.htmx-indicator) {
+        display: none !important;
+    }
+    [x-cloak] {
+        display: none !important;
+    }
+</style>
+<script>
+    // Debug logging
+    console.log('HTMX loaded:', typeof htmx !== 'undefined');
+    console.log('Alpine loaded:', typeof Alpine !== 'undefined');
+
+    // Check HTMX events
+    document.body.addEventListener('htmx:configRequest', function(event) {
+        console.log('HTMX configRequest:', event.detail);
+    });
+
+    document.body.addEventListener('htmx:beforeRequest', function(event) {
+        console.log('HTMX beforeRequest:', event.detail);
+    });
+
+    document.body.addEventListener('htmx:afterRequest', function(event) {
+        console.log('HTMX afterRequest:', event.detail);
+
+        if (event.detail.target.id === 'data-table-container') {
+            // Remove active class from all tabs
+            document.querySelectorAll('.sheet-tab').forEach(tab => {
+                tab.classList.remove('border-blue-500', 'text-blue-600', 'dark:text-blue-400');
+                tab.classList.add('border-transparent', 'text-gray-500', 'dark:text-gray-400');
+            });
+            // Add active class to clicked tab
+            event.detail.elt.classList.remove('border-transparent', 'text-gray-500', 'dark:text-gray-400');
+            event.detail.elt.classList.add('border-blue-500', 'text-blue-600', 'dark:text-blue-400');
+        }
+    });
+
+    document.body.addEventListener('htmx:responseError', function(event) {
+        console.error('HTMX responseError:', event.detail);
+    });
+
+    // Check if Force Refresh button exists after page load
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            const buttons = document.querySelectorAll('[hx-post*="validate-ai"]');
+            console.log('Found validation buttons:', buttons.length);
+            buttons.forEach((btn, idx) => {
+                console.log(`Button ${idx}:`, btn.outerHTML.substring(0, 200));
+            });
+        }, 1000);
+    });
+</script>
+{% endblock %}

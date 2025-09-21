@@ -1,0 +1,24 @@
+{# AI Validation Error - HTMX Partial #}
+<div id="ai-validation-results" class="bg-red-50 rounded-lg border border-red-200 p-6 mt-6">
+  <div class="flex items-start">
+    <svg class="w-5 h-5 text-red-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <div class="ml-3">
+      <h3 class="text-sm font-medium text-red-800">
+        Validation Error
+      </h3>
+      <div class="mt-2 text-sm text-red-700">
+        <p>{{ error }}</p>
+      </div>
+      <div class="mt-4">
+        <button
+          onclick="document.getElementById('ai-validation-results').remove(); document.getElementById('ai-validation-button').classList.remove('hidden')"
+          class="text-sm text-red-600 hover:text-red-500 font-medium"
+        >
+          Dismiss
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
