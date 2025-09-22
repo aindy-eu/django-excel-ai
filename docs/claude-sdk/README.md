@@ -4,6 +4,17 @@
 
 This Django application integrates Anthropic's Claude AI SDK to provide AI-powered features throughout the platform. The integration demonstrates enterprise-level AI implementation with proper abstraction, error handling, and testing.
 
+## 📚 Documentation
+
+### Available Documentation Files
+
+1. **[Features Showcase](./features-showcase.md)** - Live examples and capabilities of the AI integration
+2. **[Integration Guide](./integration-guide.md)** - Step-by-step guide for adding AI to new features
+3. **[AI Validation Architecture](./ai-validation-architecture.md)** - Clean architecture patterns for AI-powered validation
+4. **[Cost Optimization Strategies](./cost-optimization-strategies.md)** - Techniques that achieved 82% cost reduction
+5. **[Billing Validation](./billing-validation.md)** - Comparison of estimated vs actual Anthropic billing
+6. **This README** - Overview and quick start guide
+
 ## 🎉 Latest Achievement: US-008 AI Excel Validation
 
 Successfully implemented production-ready AI validation for Excel files with:
@@ -82,8 +93,8 @@ AI_CONFIG = {
 
 ### Core SDK (US-007) - `test_ai` Command
 
-| Operation          | Input Tokens | Output Tokens | Response Time | Cost   |
-| ------------------ | ------------ | ------------- | ------------- | ------ |
+| Operation          | Input Tokens | Output Tokens | Response Time | Cost    |
+| ------------------ | ------------ | ------------- | ------------- | ------- |
 | Simple Query       | 17-22        | 4-5           | <1s           | $0.0001 |
 | Code Analysis      | 62           | 31            | <1s           | $0.0006 |
 | With System Prompt | 91           | 227-274       | <1s           | $0.0039 |
@@ -140,19 +151,6 @@ pytest apps/core/tests/test_ai_service.py -v
 # Integration test
 python manage.py test_ai
 ```
-
-## 📚 Documentation
-
-### Core Integration (US-007)
-
-- [Features Showcase](./features-showcase.md) - Live examples of AI capabilities
-- [Integration Guide](./integration-guide.md) - How to add AI to new features
-
-### Excel AI Validation (US-008) ✅ COMPLETED
-
-- [AI Validation Architecture](./ai-validation-architecture.md) - Clean architecture patterns for AI integration
-- [Cost Optimization Strategies](./cost-optimization-strategies.md) - 82% cost reduction techniques
-- [Billing Validation](./billing-validation.md) - Real production costs vs actual Anthropic billing ✨
 
 ## 🎯 Completed Features
 

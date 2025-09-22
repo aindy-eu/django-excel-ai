@@ -12,6 +12,13 @@ Modern Django 5.1 application demonstrating clean architecture, hypermedia-drive
 
 For a comprehensive overview of the codebase organization, see [Project Structure Documentation](docs/project-structure.md).
 
+## 🧪 Test Data
+
+A sample Excel file for testing AI validation is available at:
+`docs/testing/product_import_demo-gpt5-invalid.xlsx`
+
+Upload this file in the Excel Manager to see AI validation in action.
+
 ## 🚀 Quick Start
 
 ### DevContainer (Recommended)
@@ -81,9 +88,9 @@ Comprehensive documentation available in [`/docs/`](./docs/README.md):
 - **[Rails to Django Guide](./docs/rails-to-django.md)** - Translation guide for Rails developers
 - **[HTMX Production Patterns](./docs/frontend/htmx-patterns.md)** - Battle-tested patterns from real features
 - **[Architecture](./docs/architecture.md)** - Clean architecture and design decisions
-- **[AI Integration](./docs/claude-sdk/)** - Claude SDK integration with cost optimization
+- **[AI Integration](./docs/claude-sdk/README.md)** - Claude SDK integration with cost optimization
 - **[Development](./docs/development.md)** - Setup and workflow
-- **[Testing](./docs/testing/)** - 86% coverage with pytest
+- **[Testing](./docs/testing/README.md)** - 86% coverage with pytest
 
 ## 🏗️ Tech Stack
 
